@@ -1,6 +1,5 @@
-# TODO: @memes - review and add/remove plugins
----
 # spell-checker:disable
+---
 repos:
   - repo: https://github.com/adrienverge/yamllint
     rev: v1.33.0
@@ -29,11 +28,10 @@ repos:
       - id: check-toml
       - id: detect-private-key
       - id: end-of-file-fixer
-      # TODO: @memes - enable after initial commits
-      # - id: no-commit-to-branch
-      #   args:
-      #     - -b
-      #     - main
+      - id: no-commit-to-branch
+        args:
+          - -b
+          - main
       - id: trailing-whitespace
   - repo: https://github.com/thoughtworks/talisman
     rev: v1.31.0
