@@ -1,7 +1,7 @@
 # use goreleaser for builds and containers
 # spell-checker: disable
 ---
-project_name: f5-google-user-data-generator
+project_name: f5-google-declaration-generator
 builds:
   - env:
       - CGO_ENABLED=0
@@ -22,7 +22,7 @@ builds:
     ignore:
       - goos: darwin
         goarch: '386'
-    main: ./cmd/f5-google-user-data-generator/
+    main: ./cmd/f5-google-declaration-generator/
     mod_timestamp: '{{ .CommitTimestamp }}'
 gomod:
   proxy: true
