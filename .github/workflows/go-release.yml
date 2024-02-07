@@ -15,8 +15,6 @@ permissions:
 
 jobs:
   goreleaser:
-    # TODO: @memes - enable in real go project
-    if: false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source

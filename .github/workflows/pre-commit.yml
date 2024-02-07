@@ -28,7 +28,6 @@ jobs:
         with:
           python-version: '3.12'
       - uses: pre-commit/action@v3.0.0
-  # TODO: @memes - remove if not using a Dockerfile
   hadolint:
     runs-on: ubuntu-latest
     steps:

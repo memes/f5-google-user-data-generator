@@ -29,11 +29,11 @@ repos:
       - id: check-toml
       - id: detect-private-key
       - id: end-of-file-fixer
-      # TODO: @memes - remove/modify if push to main is allowed
-      - id: no-commit-to-branch
-        args:
-          - -b
-          - main
+      # TODO: @memes - enable after initial commits
+      # - id: no-commit-to-branch
+      #   args:
+      #     - -b
+      #     - main
       - id: trailing-whitespace
   - repo: https://github.com/thoughtworks/talisman
     rev: v1.31.0

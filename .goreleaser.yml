@@ -1,11 +1,7 @@
 # use goreleaser for builds and containers
-#
-# TODO: @memes
-#  - search for APP and update as needed
-#  - modify labels, as needed
 # spell-checker: disable
 ---
-project_name: APP
+project_name: f5-google-user-data-generator
 builds:
   - env:
       - CGO_ENABLED=0
@@ -26,8 +22,7 @@ builds:
     ignore:
       - goos: darwin
         goarch: '386'
-    # TODO: @memes - modify to match location of main package if not in root
-    main: ./cmd/APP/
+    main: ./cmd/f5-google-user-data-generator/
     mod_timestamp: '{{ .CommitTimestamp }}'
 gomod:
   proxy: true
@@ -84,7 +79,7 @@ dockers:
       - "--label=org.opencontainers.image.title={{ .ProjectName }}"
       - "--label=org.opencontainers.image.authors=memes@matthewemes.com"
       - "--label=org.opencontainers.image.description={{ .ProjectName }} description"
-      - "--label=org.opencontainers.image.licenses=MIT"
+      - "--label=org.opencontainers.image.licenses=Apache-2.0"
       - "--label=org.opencontainers.image.created={{ .Date }}"
       - "--label=org.opencontainers.image.source={{ .GitURL }}/tree/{{ .FullCommit }}"
       - "--label=org.opencontainers.image.documentation={{ .GitURL }}/tree/{{ .FullCommit }}/README.md"
