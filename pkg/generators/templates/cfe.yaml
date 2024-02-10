@@ -1,0 +1,52 @@
+{{- with .Header }}{{ template "header.yaml" . }}{{ end -}}
+# yamllint disable-line rule:line-length
+$schema: {{ .SchemaURL }}
+schemaVersion: {{ .Version }}
+class: Cloud_Failover
+environment: gcp
+controls:
+  class: Controls
+  logLevel: {{ .LogLevel }}
+externalStorage:
+{{- with .ScopingTags }}
+  scopingTags:
+{{- range $key, $value := . }}
+    {{ $key }}: {{ $value }}
+{{- end }}
+{{- end }}
+failoverAddresses:
+  enabled: true
+{{- with .ScopingTags }}
+  scopingTags:
+{{- range $key, $value := . }}
+    {{ $key }}: {{ $value }}
+{{- end }}
+{{- end }}
+{{- with .FailoverRoutes }}
+failoverRoutes:
+  enabled: true
+{{- range . }}
+  routeGroupDefinitions:
+{{- with .StaticRoute }}
+    scopingName: {{ .Name }}
+    defaultNextHopAddresses:
+      discoveryType: static
+      items:
+{{- range .MextHopAddresses }}
+        - '{{ . }}'
+{{- end }}
+{{- end }}
+{{- with .TaggedRoute }}
+    scopingTags:
+{{- range $key, $value := . }}
+      {{ $key }}: {{ $value }}
+{{- end }}
+    scopingAddressRanges:
+{{- range .AddressRanges }}
+      - range: '{{ . }}'
+{{- end }}
+    defaultNextHopAddresses:
+      discoveryType: routeTag
+{{- end }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,20 @@
+{{- with .Header }}{{ template "header.yaml" . }}{{ end -}}
+# yamllint disable-line rule:line-length
+$schema: {{ .SchemaURL }}
+schemaVersion: {{ .Version }}
+class: Telemetry
+controls:
+  class: Controls
+  logLevel: {{ .LogLevel }}
+  debug: false
+system:
+  class: Telemetry_System
+  systemPoller:
+    interval: 300
+monitoring:
+  class: Telemetry_Consumer
+  type: Google_Cloud_Monitoring
+  projectId: '{{ .ProjectID }}'
+  serviceEmail: '{{ .ServiceAccount }}'
+  reportInstanceMetadata: true
+  useServiceAccountToken: true

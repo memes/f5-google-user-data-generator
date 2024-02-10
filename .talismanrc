@@ -11,4 +11,30 @@ fileignoreconfig:
 - filename: README.md
   ignore_detectors:
   - filecontent
+- filename: pkg/generators/as3/as3.go
+  checksum: 8143d9be681082309fb07c209ea14fc835c894b6d1ac6fdf4a309cb161011ab0
+- filename: pkg/generators/do/do.go
+  checksum: 7a289ce5d9668c8995a6ed24d357940bd2be5ca5f8e8c600eb9627bd443d804c
+- filename: pkg/generators/cfe/cfe.go
+  checksum: 81738fcd80560529918d0aa29e8f4d16e1fab87263b714c813f45092c1de3d5b
+- filename: pkg/generators/ts/ts.go
+  checksum: 268681c9074e1fef1def2e39bd04bc83d3a74a9232ddef4633124b73705530a2
+- filename: pkg/generators/runtimeinit/runtime_init.go
+  checksum: 0801ef790bf5f090804a603fa70dce4f2397f01302328e658ba86109ce20617d
+- filename: go.sum
+  checksum: f6ba5a3da34fc0cbf464e7c7b308ef73b223f0372fa33b9119f73af7b53445a6
+- filename: cmd/do.go
+  checksum: 96cdf497a6de739e8785f5026aeedad369354b60701a27856722f592f80f0a35
+- filename: cmd/runtimeinit.go
+  checksum: 5eecad38c3e2435a1137277ca752968f6252838094efe1339c017b8560e3ad01
+- filename: pkg/generators/templates/runtime-init.yaml
+  checksum: 80df0e8f9fb274b4bf4089b8f541df9a5a4feb8f9b69193ab6545254a9a80bd9
+- filename: pkg/generators/templates/cfe.yaml
+  checksum: aac6b1f80e47a671cba60f6857f9c336e63c1073e1bfd47e6f11809d620cae76
+- filename: pkg/generators/cloudinit/cloudconfig_test.go
+  checksum: a1f9d286500b74ebe3712691aa23e45d2a58a86d64eedb9e3e2b08e5a8c1c2e3
+- filename: pkg/generators/runtimeinit/runtime_init_test.go
+  checksum: 2606ce3e163f5af5a8f1b99119a73dc9a62d30909ab35354f39096c49d537286
+- filename: pkg/generators/templates/do.yaml
+  checksum: 302e655d55ba55b4545647b3633b33eb79fffa6e49a52fcf28d8f0ebbad0a274
 version: "1.0"

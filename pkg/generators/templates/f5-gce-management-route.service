@@ -1,0 +1,12 @@
+[Unit]
+Description=Reset BIG-IP management route if necessary
+After=httpd.service f5-startup.service
+
+[Service]
+Type=simple
+ExecStart=/config/cloud/reset_management_route.sh
+StandardOutput=journal+console
+StandardError=journal+console
+
+[Install]
+WantedBy=multi-user.target

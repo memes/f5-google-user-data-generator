@@ -6,6 +6,13 @@ run:
 issues:
   max-issues-per-linter: 0
   max-same-issues: 0
+  exclude-rules:
+    - path: cmd/.*\.go
+      linters:
+        - dupl
+    - path: _test\.go
+      linters:
+        - dupl
 linters:
   disable-all: true
   enable:
@@ -62,7 +69,6 @@ linters:
     - whitespace
     - wrapcheck
 linters-settings:
-  # TODO @memes - update the list of allowed imports
   depguard:
     rules:
       main:
@@ -72,12 +78,22 @@ linters-settings:
         allow:
           - $gostd
           - github.com/memes
+          - github.com/Masterminds/sprig/v3
+          - github.com/google/uuid
+          - github.com/mitchellh/go-homedir
+          - github.com/spf13/cobra
+          - github.com/spf13/viper
+          - go.uber.org/goleak
+          - gopkg.in/yaml.v3
       test:
         files:
           - $test
         allow:
           - $gostd
           - github.com/memes
+          - github.com/google/uuid
+          - github.com/santhosh-tekuri/jsonschema/v5
+          - gopkg.in/yaml.v3
   errcheck:
     check-type-assertions: true
     check-blank: true

@@ -1,0 +1,49 @@
+{{- with .Header }}{{ template "header.yaml" . }}{{ end -}}
+class: AS3
+action: deploy
+logLevel: {{ .LogLevel }}
+persist: true
+declaration:
+  class: ADC
+  $schema: {{ .SchemaURL }}
+  schemaVersion: {{ .Version }}
+  id: {{ .ID }}
+  label: {{ .Label }}
+  remark: {{ .Remark }}
+  {{ .Tenant }}:
+    class: Tenant
+    Shared:
+      class: Application
+      template: shared
+{{- if or .ReadinessHealthCheckPort (not .VIPs) }}
+      vip_wildcard:
+        class: Service_Address
+        virtualAddress: '::/0'
+{{- end }}
+{{- range .VIPs }}
+      {{ . | vipIdentifier }}:
+        class: Service_Address
+        virtualAddress: '{{ . }}'
+{{- end }}
+    {{ .Name }}:
+      class: Application
+      template: http
+      serviceMain:
+        class: Service_HTTP
+        virtualAddresses:
+{{- range .VIPs }}
+          - use: /{{ $.Tenant }}/Shared/{{ . | vipIdentifier }}
+{{- else }}
+          - use: /{{ $.Tenant }}/Shared/vip_wildcard
+{{- end }}
+{{- if .ReadinessHealthCheckPort }}
+      # This application listens on wildcard address as this will be assigned to floating traffic group
+      {{ .Name }}_hc:
+        class: Service_HTTP
+        remark: Respond to GCP readiness (proxy LB healthcheck) probes
+        virtualPort: {{ .ReadinessHealthCheckPort }}
+        virtualAddresses:
+          - use: /{{ .Tenant }}/Shared/vip_wildcard
+        iRules:
+          - use: /Common/Shared/hc_respond_200
+{{- end }}

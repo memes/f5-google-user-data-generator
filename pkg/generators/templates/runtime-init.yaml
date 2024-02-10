@@ -1,0 +1,136 @@
+{{- with .Header }}{{ template "header.yaml" . }}{{ end -}}
+---
+controls:
+  logLevel: {{ .LogLevel }}
+  extensionInstallDelayInMs: 60000
+runtime_parameters:
+  - name: {{ .AdminPassword | shaveMustache }}
+    type: secret
+    secretProvider:
+      environment: gcp
+      type: SecretsManager
+      # TODO: secretId must match the name of the secret in Google Secret Manager, located in the same project as the VM
+      secretId: big-ip-admin-password-secret
+      # TODO: Default will use the latest value of associated with the Secret available when the BIG-IP executes
+      # runtime-init; if a specific version should be used change the next line to the integer version.
+      version: latest
+  - name: {{ .ProjectID | shaveMustache }}
+    type: url
+    value: http://169.254.169.254/computeMetadata/v1/project/project-id
+    returnType: string
+    headers:
+      - name: Metadata-Flavor
+        value: Google
+  - name: {{ .InstanceName | shaveMustache }}
+    type: url
+    value: http://169.254.169.254/computeMetadata/v1/instance/name
+    returnType: string
+    headers:
+      - name: Metadata-Flavor
+        value: Google
+{{- range .Interfaces }}
+  - name: {{ .Address | shaveMustache }}
+    type: metadata
+    metadataProvider:
+      environment: gcp
+      type: network
+      index: {{ .Index }}
+      field: ip
+      ipcalc: address
+  - name: {{ .GatewayAddress | shaveMustache }}
+    type: metadata
+    metadataProvider:
+      environment: gcp
+      type: network
+      field: ip
+      index: {{ .Index }}
+      ipcalc: first
+  - name: {{ .MTU | shaveMustache }}
+    type: url
+    value: http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/{{ .Index }}/?recursive=true
+    query: mtu
+    returnType: number
+    headers:
+      - name: Metadata-Flavor
+        value: Google
+  - name: {{ .NetworkAddress | shaveMustache }}
+    type: metadata
+    metadataProvider:
+      environment: gcp
+      type: network
+      index: {{ .Index }}
+      field: ip
+      ipcalc: base
+  - name: {{ .NetworkBitmask | shaveMustache }}
+    type: metadata
+    metadataProvider:
+      environment: gcp
+      type: network
+      index: {{ .Index }}
+      field: ip
+      ipcalc: bitmask
+{{- end }}
+pre_onboard_enabled:
+  - name: provision_rest
+    type: inline
+    commands:
+      - /usr/bin/setdb provision.extramb 1536 || true
+      - /usr/bin/setdb restjavad.useextramb true || true
+{{- if or .DeclarativeOnboarding .ApplicationServices3 .TelemetryStreaming }}
+extension_packages:
+  install_operations:
+{{- with .DeclarativeOnboarding }}
+    - extensionType: do
+      extensionHash: {{ .PackageSHA }}
+      extensionVersion: {{ .Version }}
+      # yamllint disable-line rule:line-length
+      extensionUrl: {{ .PackageURL }}
+{{- end }}
+{{- with .ApplicationServices3 }}
+    - extensionType: as3
+      extensionHash: {{ .PackageSHA }}
+      extensionVersion: {{ .Version }}
+      # yamllint disable-line rule:line-length
+      extensionUrl: {{ .PackageURL }}
+{{- end }}
+{{- with .TelemetryStreaming }}
+    - extensionType: ts
+      extensionHash: {{ .PackageSHA }}
+      extensionVersion: {{ .Version }}
+      # yamllint disable-line rule:line-length
+      extensionUrl: {{ .PackageURL }}
+{{- end }}
+{{- end }}
+{{- if or .DeclarativeOnboarding .ApplicationServices3 .TelemetryStreaming .Application }}
+extension_services:
+  service_operations:
+{{- with .DeclarativeOnboarding }}
+    - extensionType: do
+      type: inline
+      value:
+{{ include "do.yaml" . | chomp | indent 8 }}
+{{- end }}
+{{- with .ApplicationServices3 }}
+    - extensionType: as3
+      type: inline
+      value:
+{{ include "as3.yaml" . | chomp | indent 8 }}
+{{- end }}
+{{- with .TelemetryStreaming }}
+    - extensionType: ts
+      type: inline
+      value:
+{{ include "ts.yaml" . | chomp | indent 8 }}
+{{- end }}
+{{- with .Application }}
+    - extensionType: as3
+      type: inline
+      value:
+{{ include "app_as3.yaml" . | chomp | indent 8 }}
+{{- end }}
+{{- end }}
+post_onboard_enabled:
+  - name: save_config
+    type: inline
+    commands:
+      - tmsh save sys config
