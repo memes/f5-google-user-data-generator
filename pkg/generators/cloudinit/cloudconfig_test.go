@@ -178,7 +178,7 @@ func TestGeneration(t *testing.T) {
 			name: "with-full-runtime-init",
 			newContext: func(t *testing.T) *cloudinit.Context {
 				t.Helper()
-				return testWithAppContext(t, testWithTSContext(t, testWithDOContext(t, testWithCFEContext(t, testWithAS3Context(t, testDefaultContext(t))))))
+				return testWithAppContext(t, testWithTSContext(t, testWithDOContext(t, testWithCFEContext(t, testWithAS3Context(t, testWithRuntimeInitContext(t, testDefaultContext(t)))))))
 			},
 		},
 	}
