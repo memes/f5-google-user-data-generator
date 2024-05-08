@@ -1,7 +1,7 @@
 # use goreleaser for builds and containers
 # spell-checker: disable
 ---
-project_name: f5-google-user-data-generator
+project_name: f5-google-declaration-generator
 builds:
   - env:
       - CGO_ENABLED=0
@@ -22,7 +22,7 @@ builds:
     ignore:
       - goos: darwin
         goarch: '386'
-    main: ./cmd/f5-google-user-data-generator/
+    main: ./cmd/
     mod_timestamp: '{{ .CommitTimestamp }}'
 gomod:
   proxy: true
@@ -78,7 +78,7 @@ dockers:
       - "--label=maintainer=Matthew Emes <memes@matthewemes.com>"
       - "--label=org.opencontainers.image.title={{ .ProjectName }}"
       - "--label=org.opencontainers.image.authors=memes@matthewemes.com"
-      - "--label=org.opencontainers.image.description={{ .ProjectName }} description"
+      - "--label=org.opencontainers.image.description=Generate F5 declaration YAMLs"
       - "--label=org.opencontainers.image.licenses=Apache-2.0"
       - "--label=org.opencontainers.image.created={{ .Date }}"
       - "--label=org.opencontainers.image.source={{ .GitURL }}/tree/{{ .FullCommit }}"
@@ -89,8 +89,6 @@ dockers:
       # yamllint enable rule:line-length
 docker_signs:
   - cmd: cosign
-    env:
-      - COSIGN_EXPERIMENTAL=1
     artifacts: images
     output: true
     args:

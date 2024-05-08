@@ -6,16 +6,23 @@ run:
 issues:
   max-issues-per-linter: 0
   max-same-issues: 0
+  exclude-rules:
+    - path: cmd/.*\.go
+      linters:
+        - dupl
+    - path: _test\.go
+      linters:
+        - dupl
 linters:
   disable-all: true
   enable:
     - asciicheck
     - bodyclose
-    - deadcode
     - depguard
     - dogsled
     - dupl
     - durationcheck
+    - err113
     - errcheck
     - errorlint
     - exportloopref
@@ -26,7 +33,6 @@ linters:
     - gocyclo
     - godot
     - godox
-    - goerr113
     - gofmt
     - gofumpt
     - goheader
@@ -51,18 +57,15 @@ linters:
     - rowserrcheck
     - sqlclosecheck
     - staticcheck
-    - structcheck
     - stylecheck
     - thelper
     - typecheck
     - unconvert
     - unparam
     - unused
-    - varcheck
     - whitespace
     - wrapcheck
 linters-settings:
-  # TODO @memes - update the list of allowed imports
   depguard:
     rules:
       main:
@@ -72,34 +75,31 @@ linters-settings:
         allow:
           - $gostd
           - github.com/memes
+          - github.com/Masterminds/sprig/v3
+          - github.com/google/uuid
+          - github.com/mitchellh/go-homedir
+          - github.com/spf13/cobra
+          - github.com/spf13/viper
+          - go.uber.org/goleak
+          - gopkg.in/yaml.v3
       test:
         files:
           - $test
         allow:
           - $gostd
           - github.com/memes
+          - github.com/google/uuid
+          - github.com/santhosh-tekuri/jsonschema/v5
+          - gopkg.in/yaml.v3
   errcheck:
     check-type-assertions: true
     check-blank: true
   gocritic:
+    # Additional checks in addition to 'stable' checks enabled by default
     enabled-checks:
       # Diagnostic
-      - appendAssign
-      - argOrder
-      - badCond
-      - caseOrder
-      - codegenComment
       - commentedOutCode
-      - deprecatedComment
-      - dupArg
-      - dupBranchBody
-      - dupCase
-      - dupSubExpr
-      - exitAfterDefer
-      - flagDeref
-      - flagName
       - nilValReturn
-      - offBy1
       - sloppyReassign
       - weakCond
       - octalLiteral
@@ -113,33 +113,17 @@ linters-settings:
       - rangeValCopy
 
       # Style
-      - assignOp
       - boolExprSimplify
-      - captLocal
-      - commentFormatting
       - commentedOutImport
-      - defaultCaseOrder
       - docStub
-      - elseif
       - emptyFallthrough
       - emptyStringTest
       - hexLiteral
       - methodExprCall
-      - regexpMust
-      - singleCaseSwitch
-      - sloppyLen
       - stringXbytes
-      - switchTrue
       - typeAssertChain
-      - typeSwitchVar
-      - underef
       - unlabelStmt
-      - unlambda
-      - unslice
-      - valSwap
-      - wrapperFunc
       - yodaStyleExpr
-      - ifElseChain
 
       # Opinionated
       - builtinShadow

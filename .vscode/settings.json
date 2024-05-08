@@ -1,6 +1,20 @@
 {
+    "files.associations": {
+        "**/templates/*service": "gotmpl",
+        "**/templates/*sh": "gotmpl",
+        "**/templates/*yaml": "gotmpl",
+        "**/*.yaml": "yaml",
+        "**/*.yml": "yaml",
+        ".talismanrc": "yaml"
+    },
     "yaml.schemas": {
         "https://json.schemastore.org/github-issue-config.json": ".github/ISSUE_TEMPLATE/config.yml",
         "https://goreleaser.com/static/schema.json": ".goreleaser.yml"
+    },
+    "[gotmpl]": {
+        "editor.rulers": [120]
+    },
+    "[yaml]": {
+        "editor.rulers": [120]
     }
 }

@@ -1,0 +1,12 @@
+[Unit]
+Description=BIG-IP onboarding
+After=httpd.service f5-startup.service
+
+[Service]
+Type=simple
+ExecStart=/config/cloud/onboard.sh
+StandardOutput=journal+console
+StandardError=journal+console
+
+[Install]
+WantedBy=multi-user.target

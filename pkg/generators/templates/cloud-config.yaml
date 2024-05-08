@@ -1,0 +1,38 @@
+#cloud-config
+{{ with .Header -}}{{ template "header.yaml" . }}{{ else }}
+# This is a base cloud-init template that can onboard a BIG-IP with self IPs
+# assigned.
+{{ end -}}
+---
+write_files:
+  - path: /config/cloud/onboard.sh
+    permissions: '0755'
+    owner: 'root:root'
+    content: |
+{{ include "onboard.sh" . | chomp | indent 6 }}
+  - path: /config/cloud/reset_management_route.sh
+    permissions: '0755'
+    owner: 'root:root'
+    content: |
+{{ include "reset_management_route.sh" . | chomp | indent 6 }}
+  - path: /etc/systemd/system/f5-gce-onboard.service
+    permissions: '0644'
+    owner: 'root:root'
+    content: |
+{{ include "f5-gce-onboard.service" . | chomp | indent 6 }}
+  - path: /etc/systemd/system/f5-gce-management-route.service
+    permissions: '0644'
+    owner: 'root:root'
+    content: |
+{{ include "f5-gce-management-route.service" . | chomp | indent 6 }}
+{{- with .RuntimeInit }}
+  - path: /config/cloud/runtime-init-conf.yaml
+    permissions: '0644'
+    owner: 'root:root'
+    content: |
+{{ include "runtime-init.yaml" . | chomp | indent 6 }}
+{{- end }}
+runcmd:
+  - systemctl daemon-reload
+  - systemctl enable f5-gce-onboard.service
+  - systemctl start f5-gce-onboard.service

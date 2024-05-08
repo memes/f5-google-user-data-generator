@@ -1,0 +1,41 @@
+{{- with .Header }}{{ template "header.yaml" . }}{{ end -}}
+class: AS3
+action: deploy
+logLevel: {{ .LogLevel }}
+persist: true
+declaration:
+  class: ADC
+  $schema: {{ .SchemaURL }}
+  schemaVersion: {{ .Version }}
+  id: {{ .ID }}
+  label: {{ .Label }}
+  remark: {{ .Remark }}
+  Common:
+    class: Tenant
+    Shared:
+      class: Application
+      template: shared
+{{- range .Interfaces }}
+      {{ .SelfIPIdentifier }}:
+        class: Service_Address
+        virtualAddress: '{{ .Address }}'
+{{- end }}
+      hc_respond_200:
+        class: iRule
+        label: health-check-responder
+        remark: Simple HTTP responder for GCP health checks
+        iRule: >-
+          when HTTP_REQUEST { HTTP::respond 200 content OK Content-Type text/plain }
+{{- if and .LivenessHealthCheckPort .Interfaces }}
+      livez:
+        class: Service_HTTP
+        remark: Return a 200 status code to confirm this instance is alive
+        iRules:
+          - use: /Common/Shared/hc_respond_200
+        virtualPort: {{ .LivenessHealthCheckPort }}
+        shareAddresses: true
+        virtualAddresses:
+{{- range .Interfaces }}
+          - use: /Common/Shared/{{ .SelfIPIdentifier }}
+{{- end }}
+{{- end }}

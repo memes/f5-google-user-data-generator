@@ -1,0 +1,67 @@
+{{- with .Header }}{{ template "header.yaml" . }}{{ end -}}
+# yamllint disable-line rule:line-length
+$schema: {{ .SchemaURL }}
+schemaVersion: {{ .Version }}
+class: Device
+async: true
+label: {{ .Label }}
+Common:
+  class: Tenant
+  system:
+    class: System
+    autoPhonehome: true
+    # TODO: replace with an appropriate domain name for your deployment
+    hostname: '{{ .InstanceName }}{{ with .DomainName }}.{{ . }}{{ end }}'
+  dns:
+    class: DNS
+    nameServers:
+{{- range .DNSServers }}
+      - {{ . }}
+{{- end}}
+  ntp:
+    class: NTP
+    timezone: {{ .Timezone }}
+    servers:
+{{- range .NTPServers }}
+      - {{ . }}
+{{- end}}
+  admin:
+    class: User
+    userType: regular
+    password: '{{ .AdminPassword }}'
+    shell: bash
+    keys: {{ toJson .SSHKeys }}
+  provision:
+    class: Provision
+{{- range $module, $allocation := .Provision }}
+    {{ $module }}: {{ $allocation }}
+{{- end }}
+{{- with .Licensing }}
+{{- end }}
+{{- range .Interfaces }}
+  {{ .Name }}:
+    class: VLAN
+    tag: {{ .VLANTag }}
+    mtu: {{ .MTU }}
+    interfaces:
+      - name: '{{ .TMMName }}'
+        tagged: false
+  {{ .SelfIPIdentifier }}:
+    class: SelfIp
+    address: '{{ .Address }}/32'
+    vlan: {{ .Name }}
+    allowService: {{- range .AllowService }}
+      - '{{ . }}'
+{{- else }} none{{ end }}
+    trafficGroup: traffic-group-local-only
+  {{ .GatewayRouteName }}:
+    class: Route
+    target: {{ .Name }}
+    network: '{{ .GatewayAddress }}/32'
+    mtu: {{ .MTU }}
+  {{ .NetworkRouteName }}:
+    class: Route
+    gw: '{{ .GatewayAddress }}'
+    network: '{{ .NetworkAddress }}/{{ .NetworkBitmask }}'
+    mtu: {{ .MTU }}
+{{- end }}
