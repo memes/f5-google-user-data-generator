@@ -22,7 +22,7 @@ fileignoreconfig:
 - filename: pkg/generators/runtimeinit/runtime_init.go
   checksum: 0801ef790bf5f090804a603fa70dce4f2397f01302328e658ba86109ce20617d
 - filename: go.sum
-  checksum: f6ba5a3da34fc0cbf464e7c7b308ef73b223f0372fa33b9119f73af7b53445a6
+  checksum: e85edb900b7e8db9e8eff297d4f09cda8ae99f04010ad6e319395256745aebbf
 - filename: cmd/do.go
   checksum: 96cdf497a6de739e8785f5026aeedad369354b60701a27856722f592f80f0a35
 - filename: cmd/runtimeinit.go
